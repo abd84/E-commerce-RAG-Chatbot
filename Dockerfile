@@ -24,8 +24,11 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p logs
 
+# Make start script executable
+RUN chmod +x start.sh
+
 # Expose port
 EXPOSE 8000
 
-# Use gunicorn for production
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker", "main:app"]
+# Use the start script
+CMD ["./start.sh"]
