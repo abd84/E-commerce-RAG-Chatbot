@@ -1,27 +1,22 @@
-# Multi-stage build for smaller final image
-FROM python:3.11-alpine as builder
-
-# Install build dependencies
-RUN apk add --no-cache gcc musl-dev libffi-dev
+# Use Python slim image (Debian-based) for better package compatibility
+FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy and install requirements
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Copy requirements first for better caching
 COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
 
-# Final stage - runtime
-FROM python:3.11-alpine
-
-# Install runtime dependencies only
-RUN apk add --no-cache libffi
-
-# Copy installed packages from builder
-COPY --from=builder /root/.local /root/.local
-
-# Set working directory
-WORKDIR /app
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
@@ -29,11 +24,8 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p logs
 
-# Make sure scripts in .local are usable
-ENV PATH=/root/.local/bin:$PATH
-
 # Expose port
 EXPOSE 8000
 
-# Use uvicorn directly for smaller footprint
-CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use gunicorn for production
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker", "main:app"]

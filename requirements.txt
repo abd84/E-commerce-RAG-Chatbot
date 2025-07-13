@@ -1,23 +1,32 @@
-# Core Framework (essential)
+# Core Framework
 fastapi==0.104.1
-uvicorn==0.24.0
+uvicorn[standard]==0.24.0
 pydantic==2.5.0
 python-dotenv==1.0.0
 
-# AI Libraries (minimal)
+# AI/ML Libraries
 openai>=1.6.1
 tiktoken>=0.5.1
 
-# Vector Database (lightweight)
+# Vector Database (use lighter version)
 chromadb==0.4.15
 
-# Data Processing (essential only)
+# Data Processing
+pandas>=2.1.0
+numpy>=1.24.3
 requests>=2.31.0
-httpx>=0.25.0
 
-# Utilities (minimal)
+# E-commerce Integration  
+shopify-python-api==1.0.1
+
+# Utilities
 aiofiles>=23.2.0
 python-multipart>=0.0.6
+python-slugify>=8.0.0
 
-# Production
+# HTTP and async support
+aiohttp>=3.9.0
+httpx>=0.25.0
+
+# Production server
 gunicorn>=21.2.0
