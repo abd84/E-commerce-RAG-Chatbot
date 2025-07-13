@@ -1,5 +1,5 @@
-# Use Python slim image
-FROM python:3.11-slim
+# Use Python 3.11 as base image
+FROM python:3.11
 
 # Set working directory
 WORKDIR /app
@@ -7,27 +7,24 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
+    g++ \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy minimal requirements for testing
-COPY requirements_minimal.txt requirements.txt
+# Copy requirements file
+COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY main_simple.py main.py
-COPY start.sh .
+COPY . .
 
 # Create necessary directories
-RUN mkdir -p logs
-
-# Make start script executable
-RUN chmod +x start.sh
+RUN mkdir -p logs chroma_db
 
 # Expose port
 EXPOSE 8000
 
-# Use the start script
-CMD ["./start.sh"]
+# Use gunicorn for production
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker", "main:app"]

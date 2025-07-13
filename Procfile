@@ -1,1 +1,1 @@
-web: ./start.sh
+web: gunicorn --bind 0.0.0.0:$PORT --workers 1 --worker-class uvicorn.workers.UvicornWorker main:app
