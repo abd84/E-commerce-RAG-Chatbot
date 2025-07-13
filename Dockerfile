@@ -1,38 +1,39 @@
-# Use Python 3.11 slim image
-FROM python:3.11-slim
+# Multi-stage build for smaller final image
+FROM python:3.11-alpine as builder
+
+# Install build dependencies
+RUN apk add --no-cache gcc musl-dev libffi-dev
 
 # Set working directory
 WORKDIR /app
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PORT=8000
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements first for better caching
+# Copy and install requirements
 COPY requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Final stage - runtime
+FROM python:3.11-alpine
+
+# Install runtime dependencies only
+RUN apk add --no-cache libffi
+
+# Copy installed packages from builder
+COPY --from=builder /root/.local /root/.local
+
+# Set working directory
+WORKDIR /app
 
 # Copy application code
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p logs chroma_db
+RUN mkdir -p logs
+
+# Make sure scripts in .local are usable
+ENV PATH=/root/.local/bin:$PATH
 
 # Expose port
-EXPOSE $PORT
+EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:$PORT/health || exit 1
-
-# Run the application
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]
+# Use uvicorn directly for smaller footprint
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
