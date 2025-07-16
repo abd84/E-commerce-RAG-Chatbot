@@ -1,0 +1,67 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.venv
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Documentation
+*.md
+*.rst
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+chroma_db/*
+logs/*
+frontend/*
+.env
+.env.*
+setup.py
+README.md
+DEPLOYMENT_SUMMARY.md
+RAILWAY_DEPLOYMENT.md
+chat-widget*.html
+nixpacks.toml
+railway.json
+start.sh
+
+# Keep only essential Python files
+!main.py
+!rag_chatbot.py
+!vector_store.py
+!shopify_extractor.py
+!config.py
+!requirements.txt
