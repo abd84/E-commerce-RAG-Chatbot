@@ -26,8 +26,8 @@ COPY main.py rag_chatbot.py vector_store.py shopify_extractor.py config.py ./
 # Create necessary directories
 RUN mkdir -p logs chroma_db
 
-# Expose port
+# Expose port (Railway will override this)
 EXPOSE 8000
 
-# Start application
-CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Railway will provide PORT env var, our app should read it
+CMD ["python", "main.py"]
