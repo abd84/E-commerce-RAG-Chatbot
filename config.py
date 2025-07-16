@@ -15,14 +15,14 @@ class Settings(BaseSettings):
     """Application settings with environment variable support"""
     
     # OpenAI Configuration
-    OPENAI_API_KEY: str = Field(..., env="OPENAI_API_KEY")
+    OPENAI_API_KEY: str = Field(default="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", env="OPENAI_API_KEY")
     OPENAI_MODEL: str = Field(default="gpt-4-turbo-preview", env="OPENAI_MODEL")
     OPENAI_EMBEDDING_MODEL: str = Field(default="text-embedding-ada-002", env="OPENAI_EMBEDDING_MODEL")
     OPENAI_MAX_TOKENS: int = Field(default=500, env="OPENAI_MAX_TOKENS")
 
     # Shopify Configuration
-    SHOPIFY_SHOP_URL: str = Field(..., env="SHOPIFY_SHOP_URL")
-    SHOPIFY_ACCESS_TOKEN: str = Field(..., env="SHOPIFY_ACCESS_TOKEN")
+    SHOPIFY_SHOP_URL: str = Field(default="9159b3-2.myshopify.com", env="SHOPIFY_SHOP_URL")
+    SHOPIFY_ACCESS_TOKEN: str = Field(default="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", env="SHOPIFY_ACCESS_TOKEN")
     SHOPIFY_API_VERSION: str = Field(default="2023-10", env="SHOPIFY_API_VERSION")
     
     # Google Sheets Configuration
