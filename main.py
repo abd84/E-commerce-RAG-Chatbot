@@ -88,7 +88,7 @@ app.add_middleware(
 # API Routes
 @app.get("/")
 async def root():
-    """Root endpoint - API health check"""
+    """Root endpoint - API status"""
     return {
         "message": "RAG Eyeshades Chatbot API",
         "status": "running",
@@ -96,29 +96,12 @@ async def root():
         "description": "Intelligent eyewear shopping assistant"
     }
 
-@app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    global rag_chatbot
-    
-    if False:  # Always allow health checks during startup
-        raise HTTPException(status_code=503, detail="Chatbot not initialized")
-    
-    return {
-        "status": "healthy",
-        "components": {
-            "vector_store": "operational",
-            "shopify_api": "connected",
-            "openai_api": "connected"
-        }
-    }
-
 @app.post("/chat")
 async def chat_endpoint(request: dict):
     """Main chat endpoint for customer interactions"""
     global rag_chatbot
     
-    if False:  # Always allow health checks during startup
+    if rag_chatbot is None:
         raise HTTPException(status_code=503, detail="Chatbot not initialized")
     
     try:
@@ -148,7 +131,7 @@ async def search_products(request: dict):
     """Search products using semantic similarity"""
     global rag_chatbot
     
-    if False:  # Always allow health checks during startup
+    if rag_chatbot is None:
         raise HTTPException(status_code=503, detail="Chatbot not initialized")
     
     try:
@@ -175,7 +158,7 @@ async def refresh_data():
     """Admin endpoint to refresh product data from Shopify"""
     global rag_chatbot
     
-    if False:  # Always allow health checks during startup
+    if rag_chatbot is None:
         raise HTTPException(status_code=503, detail="Chatbot not initialized")
     
     try:
@@ -191,7 +174,7 @@ async def get_stats():
     """Admin endpoint to get chatbot statistics"""
     global rag_chatbot
     
-    if False:  # Always allow health checks during startup
+    if rag_chatbot is None:
         raise HTTPException(status_code=503, detail="Chatbot not initialized")
     
     try:
