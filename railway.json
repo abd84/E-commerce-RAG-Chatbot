@@ -5,9 +5,9 @@
     "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "startCommand": "python main_debug.py",
+    "startCommand": "python main.py",
     "healthcheckPath": "/health",
-    "healthcheckTimeout": 60,
+    "healthcheckTimeout": 100,
     "restartPolicyType": "on_failure"
   }
 }
