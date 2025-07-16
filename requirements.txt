@@ -10,7 +10,7 @@ langchain==0.0.335
 langchain-openai==0.0.2
 langchain-community==0.0.6
 sentence-transformers==2.2.2
-tiktoken==0.5.1
+tiktoken>=0.5.2,<0.6.0
 
 # Vector Database
 chromadb==0.4.15
