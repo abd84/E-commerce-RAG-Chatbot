@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     API_PORT: int = Field(default=8000, env="PORT")  # Railway uses PORT env var
     API_RELOAD: bool = Field(default=False, env="API_RELOAD")  # Disable reload in production
     API_SECRET_KEY: str = Field(default="your-secret-key", env="API_SECRET_KEY")
-    API_CORS_ORIGINS: str = Field(default='["http://localhost:3000", "http://localhost:8080"]', env="API_CORS_ORIGINS")
+    API_CORS_ORIGINS: str = Field(default='["*"]', env="API_CORS_ORIGINS")
     
     # Logging Configuration
     LOG_LEVEL: str = Field(default="INFO", env="LOG_LEVEL")
