@@ -1,83 +1,128 @@
+#!/usr/bin/env python3
 """
-Debug version of main.py for Railway deployment
+Debug version of main.py for Railway deployment troubleshooting
 """
 import os
 import sys
-import traceback
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import logging
+from datetime import datetime
+import platform
 
-print("🔍 Debug: Starting application...")
-print(f"🔍 Debug: Python version: {sys.version}")
-print(f"🔍 Debug: PORT env var: {os.environ.get('PORT', 'Not Set')}")
-
-# Create minimal FastAPI app
-app = FastAPI(
-    title="Eyeshades Chatbot - Debug Mode",
-    description="Debug version to identify deployment issues",
-    version="1.0.0"
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
 )
+logger = logging.getLogger(__name__)
 
-# Add CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.get("/")
-async def root():
-    return {
-        "message": "Eyeshades Chatbot Debug Mode",
-        "status": "running",
-        "port": os.environ.get('PORT', 'Not Set'),
-        "python_version": sys.version
-    }
-
-@app.get("/health")
-async def health_check():
+def check_environment():
+    """Check environment variables and system status"""
+    logger.info("=== ENVIRONMENT VARIABLES ===")
+    
+    # Check required environment variables
+    required_vars = ["OPENAI_API_KEY", "SHOPIFY_SHOP_URL", "SHOPIFY_ACCESS_TOKEN"]
+    for var in required_vars:
+        value = os.environ.get(var)
+        if value:
+            logger.info(f"✓ {var}: {'*' * min(len(value), 20)}...")
+        else:
+            logger.error(f"✗ {var}: NOT SET")
+    
+    # Check PORT variable
+    port = os.environ.get("PORT")
+    logger.info(f"PORT: {port}")
+    
+    # System information
+    logger.info("=== SYSTEM INFORMATION ===")
+    logger.info(f"Platform: {platform.platform()}")
+    logger.info(f"Python version: {sys.version}")
+    logger.info(f"Working directory: {os.getcwd()}")
+    
+    # List files in current directory
     try:
-        env_vars = {
-            "PORT": os.environ.get('PORT'),
-            "OPENAI_API_KEY": "SET" if os.environ.get('OPENAI_API_KEY') else "NOT_SET",
-            "SHOPIFY_SHOP_URL": "SET" if os.environ.get('SHOPIFY_SHOP_URL') else "NOT_SET",
-            "SHOPIFY_ACCESS_TOKEN": "SET" if os.environ.get('SHOPIFY_ACCESS_TOKEN') else "NOT_SET"
-        }
-        
-        return {
-            "status": "healthy",
-            "environment_variables": env_vars,
-            "timestamp": "2025-07-16"
-        }
+        files = os.listdir('.')
+        logger.info(f"Files in current directory: {files[:10]}...")  # Show first 10 files
     except Exception as e:
-        return {
-            "status": "error",
-            "error": str(e),
-            "traceback": traceback.format_exc()
-        }
+        logger.error(f"Could not list files: {e}")
 
-@app.post("/chat")
-async def simple_chat():
-    return {
-        "response": "Hello! I'm in debug mode. Environment check complete."
-    }
+def create_simple_app():
+    """Create a simple FastAPI app for debugging"""
+    try:
+        from fastapi import FastAPI, HTTPException
+        from fastapi.responses import JSONResponse
+        import uvicorn
+        
+        app = FastAPI(title="RAG Eyeshades Debug", version="1.0.0")
+        
+        @app.get("/")
+        async def root():
+            return {"message": "RAG Eyeshades Debug API", "status": "running", "timestamp": datetime.now().isoformat()}
+        
+        @app.get("/health")
+        async def health_check():
+            logger.info("Health check request received")
+            try:
+                # Basic health check
+                return {
+                    "status": "healthy",
+                    "timestamp": datetime.now().isoformat(),
+                    "port": os.environ.get("PORT", "8000"),
+                    "env_vars_set": {
+                        "OPENAI_API_KEY": bool(os.environ.get("OPENAI_API_KEY")),
+                        "SHOPIFY_SHOP_URL": bool(os.environ.get("SHOPIFY_SHOP_URL")),
+                        "SHOPIFY_ACCESS_TOKEN": bool(os.environ.get("SHOPIFY_ACCESS_TOKEN"))
+                    }
+                }
+            except Exception as e:
+                logger.error(f"Health check failed: {e}")
+                raise HTTPException(status_code=500, detail=f"Health check failed: {str(e)}")
+        
+        @app.post("/chat")
+        async def chat_debug(request: dict):
+            logger.info(f"Chat request received: {request}")
+            return {
+                "response": "Debug mode: Chat functionality temporarily disabled. Environment setup in progress.",
+                "timestamp": datetime.now().isoformat(),
+                "debug": True
+            }
+        
+        return app, uvicorn
+        
+    except Exception as e:
+        logger.error(f"Failed to create app: {e}")
+        raise
 
-if __name__ == "__main__":
-    import uvicorn
+def main():
+    """Main function"""
+    logger.info("=== RAG EYESHADES DEBUG MODE ===")
+    logger.info(f"Started at: {datetime.now().isoformat()}")
+    
+    # Check environment
+    check_environment()
     
     try:
-        port = int(os.environ.get("PORT", 8000))
-        print(f"🚀 Debug: Starting server on port {port}")
+        # Create simple app
+        app, uvicorn = create_simple_app()
         
+        # Get port
+        port = int(os.environ.get("PORT", 8000))
+        logger.info(f"Starting server on port {port}")
+        
+        # Start server
         uvicorn.run(
             app,
             host="0.0.0.0",
             port=port,
+            access_log=True,
             log_level="info"
         )
+        
     except Exception as e:
-        print(f"❌ Debug: Failed to start server: {e}")
-        traceback.print_exc()
+        logger.error(f"Failed to start server: {e}")
         sys.exit(1)
+
+if __name__ == "__main__":
+    main()
