@@ -15,14 +15,14 @@ class Settings(BaseSettings):
     """Application settings with environment variable support"""
     
     # OpenAI Configuration
-    OPENAI_API_KEY: str = Field(..., env="OPENAI_API_KEY")
+    OPENAI_API_KEY: str = Field(default="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", env="OPENAI_API_KEY")
     OPENAI_MODEL: str = Field(default="gpt-4-turbo-preview", env="OPENAI_MODEL")
     OPENAI_EMBEDDING_MODEL: str = Field(default="text-embedding-ada-002", env="OPENAI_EMBEDDING_MODEL")
     OPENAI_MAX_TOKENS: int = Field(default=500, env="OPENAI_MAX_TOKENS")
 
     # Shopify Configuration
-    SHOPIFY_SHOP_URL: str = Field(..., env="SHOPIFY_SHOP_URL")
-    SHOPIFY_ACCESS_TOKEN: str = Field(..., env="SHOPIFY_ACCESS_TOKEN")
+    SHOPIFY_SHOP_URL: str = Field(default="9159b3-2.myshopify.com", env="SHOPIFY_SHOP_URL")
+    SHOPIFY_ACCESS_TOKEN: str = Field(default="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", env="SHOPIFY_ACCESS_TOKEN")
     SHOPIFY_API_VERSION: str = Field(default="2023-10", env="SHOPIFY_API_VERSION")
     
     # Google Sheets Configuration
@@ -68,15 +68,15 @@ class Settings(BaseSettings):
     STORE_WEBSITE: str = Field(default="https://eyeshades.pk", env="STORE_WEBSITE")
     STORE_EMAIL: str = Field(default="eyeshades.pk@gmail.com", env="STORE_EMAIL")
     STORE_PHONE: str = Field(default="+92 320 4510453", env="STORE_PHONE")
-    STORE_ADDRESS: str = Field(default="1: Johar Town Phase 1, G1 market, opp. INT School of Choueifat, Phase 1 Johar Town, Lahore, 54615, Pakistan; 2: Shah Alam market, Shop 4, Sufi M. Aslam Optical Market, 5/6 Shah Alam Gate, Sector A1 Sector A 1 Lahore, Punjab 54100", env="STORE_ADDRESS")
-    STORE_BUSINESS_HOURS: str = Field(default="Mon-Fri: 10AM-10PM, Sat: 10AM-9PM, Sun: Closed", env="STORE_BUSINESS_HOURS")
-    STORE_DESCRIPTION: str = Field(default="We are one of the leading retailers in the optical industry, serving for over 22 years. Explore our extensive range of branded and premium-quality eyewear, including contact lenses, sunglasses, and eyeglasses for men, women and kids. Our comprehensive online store caters to all your eyewear needs with a best-price guarantee. Ensuring affordability is our top priority, and we offer nationwide delivery across Pakistan, with free shipping to all cities on orders above 3000.", env="STORE_DESCRIPTION")
-    STORE_SPECIALTIES: str = Field(default="Contact Lenses, Prescription Eyeglasses, Designer Sunglasses, Eye Exams", env="STORE_SPECIALTIES")
-    STORE_RETURN_POLICY: str = Field(default="7 days return and refund policy. For more info visit https://eyeshades.pk/policies/refund-policy. Opened contact lenses cannot be returned", env="STORE_RETURN_POLICY")
-    STORE_SHIPPING_INFO: str = Field(default="Free delivery on orders above 3000 PKR. For more info visit https://eyeshades.pk/pages/shipping-and-delivery", env="STORE_SHIPPING_INFO")
-    STORE_ORDER_TRACKING_URL: str = Field(default="https://eyeshades.pk/pages/track-order", env="STORE_ORDER_TRACKING_URL")
-    STORE_PAYMENT_METHODS: str = Field(default="Bank transfer, Cash on delivery", env="STORE_PAYMENT_METHODS")
-    STORE_BANK_DETAILS: str = Field(default="Kashif Javaid, Meezan Bank, 02020103622814", env="STORE_BANK_DETAILS")
+    STORE_ADDRESS: str = Field(default="", env="STORE_ADDRESS")
+    STORE_BUSINESS_HOURS: str = Field(default="", env="STORE_BUSINESS_HOURS")
+    STORE_DESCRIPTION: str = Field(default="", env="STORE_DESCRIPTION")
+    STORE_SPECIALTIES: str = Field(default="", env="STORE_SPECIALTIES")
+    STORE_RETURN_POLICY: str = Field(default="", env="STORE_RETURN_POLICY")
+    STORE_SHIPPING_INFO: str = Field(default="", env="STORE_SHIPPING_INFO")
+    STORE_ORDER_TRACKING_URL: str = Field(default="", env="STORE_ORDER_TRACKING_URL")
+    STORE_PAYMENT_METHODS: str = Field(default="", env="STORE_PAYMENT_METHODS")
+    STORE_BANK_DETAILS: str = Field(default="", env="STORE_BANK_DETAILS")
 
     # Environment/Debug
     ENVIRONMENT: str = Field(default="development", env="ENVIRONMENT")
